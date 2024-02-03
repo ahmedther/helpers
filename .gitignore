@@ -1,3 +1,4 @@
 py_res_helper_venv
 ~$*
 __pycache__/
+**/output_files/

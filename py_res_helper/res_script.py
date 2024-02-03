@@ -12,7 +12,7 @@ class ResumeHelper:
         self.process_to_kill = [
             "WINWORD.EXE",
             "FoxitPDFEditor.exe",
-            "Notepad.exe",
+            # "Notepad.exe",
             "Acrobat.exe",
         ]
         self.template_path = f"{os.getcwd()}\\templates"
@@ -50,11 +50,18 @@ class ResumeHelper:
 
     def replace_string_in_docx_template_table(self, replace_text, file, save_location):
         doc = Document(file)
+        # Remove extra spaces
+        text = re.sub(" +", " ", pyperclip.paste())
+
+        # Replace multiple line breaks with a single one
+        text = re.sub("\r\n\r\n", "\n\n", text)
+        text = re.sub("\\n+", "\\n\\n", text)
+
         cell = doc.tables[0].rows[3].cells[0]
         for i in range(len(cell.paragraphs)):
             for run in cell.paragraphs[i].runs:
                 if replace_text in run.text:
-                    run.text = run.text.replace(replace_text, pyperclip.paste())
+                    run.text = run.text.replace(replace_text, text.strip())
 
         doc.save(save_location)
 
@@ -89,12 +96,15 @@ class ResumeHelper:
         os.startfile(filename)
 
     def run(self):
-        while True:
+        run = True
+        while run:
             self.close_apps()
 
-            input("\n\nPress Enter to Open the Notepad Template ")
-
-            self.launch_file(self.notepad_template)
+            open_notepad = input(
+                "\n\nPress 1 to Open the Notepad Template. Otherwise Press Enter To Continue... "
+            )
+            if open_notepad == "1":
+                self.launch_file(self.notepad_template)
 
             input("\n\nPress Enter Process and Copy Data From the Notepad Template ")
 
@@ -119,7 +129,19 @@ class ResumeHelper:
                 pdf2_name=r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed_Qureshi_Resume_ProjPortfolio.pdf",
                 output_name=r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed_Qureshi_Cover_Resume_ProjPortfolio.pdf",
             )
-            input("\n\nAll Operations are Completed\n\nPress Enter to Start Again... ")
+            continue_run = input(
+                """
+\n\nAll Operations are Completed\n
+---------------------------------
+|                               |
+|   Script execution complete   |
+|                               |
+---------------------------------
+\n\nPress Enter to Start Again...
+"""
+            )
+            if continue_run == "1":
+                run = False
 
 
 if __name__ == "__main__":
