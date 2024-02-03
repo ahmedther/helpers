@@ -177,8 +177,6 @@ if __name__ == "__main__":
 #     os.startfile(output_name)
 
 
-if __name__ == "__main__":
-    close_apps()
 # # # Call the function with the path to your file
 # # process_file(
 # #     r"C:\Users\AHMED\Desktop\AHMED\Resume\others\Analyse the following job posting a.txt
