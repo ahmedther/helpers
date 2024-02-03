@@ -1,6 +1,12 @@
 @echo off
-cd "C:\Users\AHMED\Desktop\AHMED\Resume\py_helper\py_res_helper_venv\Scripts"
-call activate
-cd "C:\Users\AHMED\Desktop\AHMED\Resume\py_helper\py_res_helper"
-python merge_pdf.py
-echo Completed
+call "..\py_res_helper_venv\Scripts\activate"
+ 
+python res_script.py
+
+@REM echo Running the first function...
+@REM python -c "import res_script; res_script.process_file()"
+
+@REM pause
+
+@REM echo Running the second function...
+@REM python -c "import res_script; res_script.merge_pdfs()"

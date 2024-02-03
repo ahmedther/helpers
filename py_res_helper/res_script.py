@@ -1,59 +1,170 @@
 import re
 import os
+import psutil
 import pyperclip
 from PyPDF2 import PdfReader, PdfWriter
 from docx2pdf import convert
+from docx import Document
 
 
-def process_file(filename):
-    with open(filename, "r") as file:
-        data = file.read()
+class ResumeHelper:
+    def __init__(self):
+        self.process_to_kill = [
+            "WINWORD.EXE",
+            "FoxitPDFEditor.exe",
+            "Notepad.exe",
+            "Acrobat.exe",
+        ]
+        self.template_path = f"{os.getcwd()}\\templates"
+        self.docx_output = (
+            f"{os.getcwd()}\\output_files\\Ahmed_Qureshi_Cover_Letter.docx"
+        )
+        self.docx_template = (
+            f"{self.template_path}\Ahmed_Qureshi_Cover_Letter_Template.docx"
+        )
+        self.notepad_template = f"{self.template_path}\\notepad_template.txt"
 
-    # Remove special characters
-    data = re.sub(r"\W+", " ", data)
+    def close_apps(self):
+        for process in (
+            process
+            for process in psutil.process_iter()
+            if process.name() in self.process_to_kill
+        ):
+            process.kill()
 
-    # Replace multiple spaces with a single space
-    data = re.sub(r"\s+", " ", data)
+    def format_and_copy_data_from_notepad(self):
+        with open(self.notepad_template, "r") as file:
+            data = file.read()
 
-    # Remove line breaks
-    data = data.replace("\n", " ")
+        # Remove special characters
+        data = re.sub(r"\W+", " ", data)
 
-    # Copy to clipboard
-    pyperclip.copy(data)
+        # Replace multiple spaces with a single space
+        data = re.sub(r"\s+", " ", data)
+
+        # Remove line breaks
+        data = data.replace("\n", " ")
+
+        # Copy to clipboard
+        pyperclip.copy(data)
+
+    def replace_string_in_docx_template_table(self, replace_text, file, save_location):
+        doc = Document(file)
+        cell = doc.tables[0].rows[3].cells[0]
+        for i in range(len(cell.paragraphs)):
+            for run in cell.paragraphs[i].runs:
+                if replace_text in run.text:
+                    run.text = run.text.replace(replace_text, pyperclip.paste())
+
+        doc.save(save_location)
+
+    def generate_and_merge_pdfs(
+        self,
+        docx_file,
+        pdf1_name: str = r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed Qureshi Cover Letter.pdf",
+        pdf2_name=r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed_Qureshi_Resume_ProjPortfolio.pdf",
+        output_name=r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed_Qureshi_Cover_Resume_ProjPortfolio.pdf",
+    ):
+
+        convert(docx_file, pdf1_name)
+
+        # Create a PDF file writer object
+        writer = PdfWriter()
+
+        # Add the pages from the first file
+        for page in PdfReader(pdf1_name).pages:
+            writer.add_page(page)
+
+        # Add the pages from the second file
+        for page in PdfReader(pdf2_name).pages:
+            writer.add_page(page)
+
+        # Write the result to the output file
+        with open(output_name, "wb") as output_file:
+            writer.write(output_file)
+
+        os.startfile(output_name)
+
+    def launch_file(self, filename):
+        os.startfile(filename)
+
+    def run(self):
+        while True:
+            self.close_apps()
+
+            input("\n\nPress Enter to Open the Notepad Template ")
+
+            self.launch_file(self.notepad_template)
+
+            input("\n\nPress Enter Process and Copy Data From the Notepad Template ")
+
+            self.format_and_copy_data_from_notepad()
+
+            input("\n\nPress Enter To Copy the Company Name On The Word Template ")
+
+            self.replace_string_in_docx_template_table(
+                "COMPANY", self.docx_template, self.docx_output
+            )
+            input("\n\nPress Enter To Copy the Body On The Word Template ")
+            self.replace_string_in_docx_template_table(
+                "body", self.docx_output, self.docx_output
+            )
+            self.launch_file(self.docx_output)
+
+            input("\n\nPress Enter To Generate and Merge PDFs ")
+
+            self.generate_and_merge_pdfs(
+                docx_file=self.docx_output,
+                pdf1_name=r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed Qureshi Cover Letter.pdf",
+                pdf2_name=r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed_Qureshi_Resume_ProjPortfolio.pdf",
+                output_name=r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed_Qureshi_Cover_Resume_ProjPortfolio.pdf",
+            )
+            input("\n\nAll Operations are Completed\n\nPress Enter to Start Again... ")
 
 
-def merge_pdfs(pdf1_name: str, pdf2_name, output_name):
-    docx_file = pdf1_name.replace(".pdf", ".docx")
-
-    convert(docx_file, pdf1_name)
-
-    # Create a PDF file writer object
-    writer = PdfWriter()
-
-    # Add the pages from the first file
-    for page in PdfReader(pdf1_name).pages:
-        writer.add_page(page)
-
-    # Add the pages from the second file
-    for page in PdfReader(pdf2_name).pages:
-        writer.add_page(page)
-
-    # Write the result to the output file
-    with open(output_name, "wb") as output_file:
-        writer.write(output_file)
-
-    os.startfile(docx_file)
-    os.startfile(output_name)
+if __name__ == "__main__":
+    helper = ResumeHelper()
+    helper.run()
 
 
-# Call the function with the path to your file
-process_file(
-    r"C:\Users\AHMED\Desktop\AHMED\Resume\others\Analyse the following job posting a.txt"
-)
+# def merge_pdfs(
+#     pdf1_name: str = r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed Qureshi Cover Letter.pdf",
+#     pdf2_name=r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed_Qureshi_Resume_ProjPortfolio.pdf",
+#     output_name=r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed_Qureshi_Cover_Resume_ProjPortfolio.pdf",
+# ):
+#     docx_file = pdf1_name.replace(".pdf", ".docx")
 
-# Call the function with your file names
-merge_pdfs(
-    r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed Qureshi Cover Letter.pdf",
-    r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed_Qureshi_Resume_ProjPortfolio.pdf",
-    r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed_Qureshi_Cover_Resume_ProjPortfolio.pdf",
-)
+#     convert(docx_file, pdf1_name)
+
+#     # Create a PDF file writer object
+#     writer = PdfWriter()
+
+#     # Add the pages from the first file
+#     for page in PdfReader(pdf1_name).pages:
+#         writer.add_page(page)
+
+#     # Add the pages from the second file
+#     for page in PdfReader(pdf2_name).pages:
+#         writer.add_page(page)
+
+#     # Write the result to the output file
+#     with open(output_name, "wb") as output_file:
+#         writer.write(output_file)
+
+#     os.startfile(docx_file)
+#     os.startfile(output_name)
+
+
+if __name__ == "__main__":
+    close_apps()
+# # # Call the function with the path to your file
+# # process_file(
+# #     r"C:\Users\AHMED\Desktop\AHMED\Resume\others\Analyse the following job posting a.txt
+# # )
+
+# # # Call the function with your file names
+# # merge_pdfs(
+# #     r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed Qureshi Cover Letter.pdf",
+# #     r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed_Qureshi_Resume_ProjPortfolio.pdf",
+# #     r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed_Qureshi_Cover_Resume_ProjPortfolio.pdf",
+# # )
