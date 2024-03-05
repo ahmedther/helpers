@@ -3,3 +3,5 @@ pyperclip
 docx2pdf
 psutil
 openpyxl
+selenium
+pyshadow
