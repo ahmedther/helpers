@@ -1,15 +1,13 @@
 import os
 import time
+import pyperclip
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 class LaunchBrowser(webdriver.Chrome):
-    def __init__(self,search):
-        self.search = search
+    def __init__(self):
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--enable-chrome-browser-cloud-management")
         chrome_options.add_argument(r"--user-data-dir=C:\Users\AHMED\AppData\Local\Google\Chrome\User Data")
@@ -22,23 +20,20 @@ class LaunchBrowser(webdriver.Chrome):
 
         self.implicitly_wait(5)
 
-        self.launch_browser()
         
-        self.first_tab_gemini()
+        self.tab_copilot()
 
         self.open_new_tab()
 
-        self.second_tab_copilot()
+        self.tab_gemini()
         
-        inpu2t= input("wait")
 
 
-    def launch_browser(self):
+
+    def tab_gemini(self):
         self.get("https://gemini.google.com/")
-
-    def first_tab_gemini(self):
         text_area = self.find_element(By.CLASS_NAME,'ql-editor')
-        text_area.send_keys(self.search,Keys.ENTER)
+        text_area.send_keys(pyperclip.paste(),Keys.ENTER)
 
     def open_new_tab(self):
         # Open a new tab
@@ -47,7 +42,7 @@ class LaunchBrowser(webdriver.Chrome):
         self.switch_to.window(self.window_handles[-1])
 
         
-    def second_tab_copilot(self):
+    def tab_copilot(self):
         # Navigate to www.google.com
         self.get("https://copilot.microsoft.com/")
         
@@ -76,10 +71,10 @@ class LaunchBrowser(webdriver.Chrome):
         text_shadow_root_2 = self.execute_script("return arguments[0].shadowRoot", host_text_shadow_2)
 
         text_area = text_shadow_root_2.find_element(By.CSS_SELECTOR, 'textarea#searchbox')
-        text_area.send_keys(self.search,Keys.ENTER)
+        text_area.send_keys(pyperclip.paste(),Keys.ENTER)
 
-        print(text_area)
-
+    def close_browser(self):
+        self.quit()
 
 
 

@@ -12,6 +12,8 @@ from openpyxl import load_workbook
 from openpyxl.styles import Font
 
 
+from selenium_script import LaunchBrowser
+
 class ResumeHelper:
     def __init__(self):
         self.process_to_kill = [
@@ -129,7 +131,8 @@ class ResumeHelper:
         with open(self.resume_txt, "r") as file:
             data += file.read()
 
-        self.format_data(data)
+        data = self.format_data(data)
+
         # Copy to clipboard
 
         pyperclip.copy(data)
@@ -264,9 +267,11 @@ class ResumeHelper:
 
     def run(self):
         run = True
-
+        browser = None
         while run:
             self.close_apps()
+            if browser:
+                browser.close_browser()
 
             date_now = self.get_formated_date()
 
@@ -295,7 +300,9 @@ class ResumeHelper:
 
             self.copy_keyword_job_resume(self.resume_summary_template, job_description)
 
-            input("\n\n✅ Copied!!! Please Copy The Summary and Press Enter ")
+            browser = LaunchBrowser()
+
+            input("\n\n✅ Please Copy The Summary and Press Enter ")
 
             self.replace_string_word(
                 search_text="summary_placeholder",
