@@ -9,7 +9,6 @@ from webdriver_manager.firefox import GeckoDriverManager
 class FirefoxBrowser:
     def __init__(self, search, ai_to_run):
         self.search = search
-
         profile_path = os.path.join(
             os.getenv("APPDATA"),
             "Mozilla",
@@ -35,10 +34,10 @@ class FirefoxBrowser:
 
         self.driver.implicitly_wait(5)
         self.reset_zoom()
-
         if ai_to_run == "gemini":
             self.tab_gemini()
         else:
+            self.search = self.search[:4000]
             self.tab_copilot()
 
     def reset_zoom(self):
