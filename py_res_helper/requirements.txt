@@ -5,3 +5,4 @@ psutil
 openpyxl
 selenium
 pyshadow
+webdriver_manager
