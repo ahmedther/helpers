@@ -283,11 +283,7 @@ class ResumeHelper:
 
     def run(self):
         run = True
-        browser = None
         while run:
-            self.close_apps()
-            if browser:
-                browser.close_browser()
 
             date_now = self.get_formated_date()
 
