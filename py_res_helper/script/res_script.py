@@ -35,10 +35,10 @@ class ResumeHelper:
         )
         self.resume_output = f"{parent_dir}\\output_files\\Ahmed_Qureshi_Resume.docx"
         self.cover_letter_template = (
-            f"{self.template_path}\Ahmed_Qureshi_Cover_Letter_Template.docx"
+            f"{self.template_path}\\Ahmed_Qureshi_Cover_Letter_Template.docx"
         )
         self.resume_template = (
-            f"{self.template_path}\Ahmed_Qureshi_Resume_Template.docx"
+            f"{self.template_path}\\Ahmed_Qureshi_Resume_Template.docx"
         )
         # self.cover_letter_template = f"{self.template_path}\\cover_letter_template.txt"
         self.resume_summary_template = (
@@ -210,25 +210,22 @@ class ResumeHelper:
 
         return formatted_date
 
-    def run_in_multiprocessing(self, func, *args, **kwargs):
-        processes = kwargs.pop(
-            "processes", 2
-        )  # Default to 2 processes if not specified
-        pool = multiprocessing.Pool(processes=processes)
+    def run_in_multiprocessing(self, func, *args):
 
-        # Check if the function is a class or a regular function
-        if isinstance(func, type):
-            # If it's a class, create a partial function with the class and the remaining arguments
-            for arg_tuple in args:
-                partial_func = partial(func, *arg_tuple)
-                pool.apply_async(partial_func)
-        else:
-            # If it's a regular function, apply it directly with the arguments
-            for arg_tuple in args:
-                pool.apply_async(func, args=arg_tuple)
+        pool = multiprocessing.Pool(processes=2)
+
+        for arg_tuple in args:
+            partial_func = partial(func, *arg_tuple)
+            pool.apply_async(partial_func)
 
         pool.close()
         pool.join()
+
+    def run_in_multiprocessing_without_partial(self, func, *args):
+
+        process = multiprocessing.Process(target=func, args=args)
+        process.start()
+        process.join()
 
     def get_programmer_title(self):
         title_dict = {
@@ -318,7 +315,6 @@ class ResumeHelper:
                 FirefoxBrowser,
                 (search, "copilot"),
                 (search, "gemini"),
-                processes=2,
             )
 
             input("\n\n✅ Please Copy The Summary and Press Enter ")
@@ -334,7 +330,7 @@ class ResumeHelper:
 
             input("\n\nPress Enter Generate Resume PDF")
 
-            self.run_in_multiprocessing(
+            self.run_in_multiprocessing_without_partial(
                 self.generate_pdf, self.resume_output, self.resume_pdf
             )
             # Cover Leter

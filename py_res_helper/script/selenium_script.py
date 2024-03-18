@@ -14,7 +14,7 @@ class FirefoxBrowser:
             "Mozilla",
             "Firefox",
             "Profiles",
-            "ivmxyghj.AutomationProfile",
+            "atex6pqj.default-release",
         )
 
         firefox_profile = webdriver.FirefoxProfile(profile_path)
@@ -42,7 +42,7 @@ class FirefoxBrowser:
 
     def reset_zoom(self):
         "Sets zoom level to 100%"
-        self.driver.execute_script("document.body.style.zoom='100%'")
+        self.driver.execute_script("document.body.style.zoom='90%'")
 
     def find_shadow_root(self, host_element):
         return self.driver.execute_script(
@@ -50,6 +50,9 @@ class FirefoxBrowser:
         )
 
     def close_browser(self):
+        """
+        Closes the currently opened browser.
+        """
         self.driver.quit()
 
     def open_new_tab(self):

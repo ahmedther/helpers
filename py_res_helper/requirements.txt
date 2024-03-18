@@ -1,6 +1,7 @@
 PyPDF2
 pyperclip
 docx2pdf
+python-docx
 psutil
 openpyxl
 selenium
