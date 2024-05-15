@@ -1,23 +1,33 @@
 import multiprocessing
 import os
+import shutil
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.firefox import GeckoDriverManager
 
+profile_path = os.path.join(
+    os.getenv("APPDATA"),
+    "Mozilla",
+    "Firefox",
+    "Profiles",
+    "a2mb7obs.default",
+)
+
+auto_path = os.path.join(
+    os.getenv("APPDATA"),
+    "Mozilla",
+    "Firefox",
+    "Profiles",
+    "automate",
+)
+
 
 class FirefoxBrowser:
     def __init__(self, search, ai_to_run):
         self.search = search
-        profile_path = os.path.join(
-            os.getenv("APPDATA"),
-            "Mozilla",
-            "Firefox",
-            "Profiles",
-            "atex6pqj.default-release",
-        )
 
-        firefox_profile = webdriver.FirefoxProfile(profile_path)
+        firefox_profile = webdriver.FirefoxProfile(auto_path)
         firefox_options = webdriver.FirefoxOptions()
 
         firefox_options.profile = firefox_profile  # Set the existing profile
@@ -107,8 +117,29 @@ class FirefoxBrowser:
         text_area.send_keys(self.search, Keys.ENTER)
 
 
+# Standalone Function (Not part of the Firefox Browser Class)
+def copy_cookies_db() -> str:
+
+    # Create the destination directory if it doesn't exist
+    if not os.path.exists(auto_path):
+        os.makedirs(auto_path)
+
+    # Source file path
+    src_file = os.path.join(profile_path, "cookies.sqlite")
+
+    # Destination file path
+    dest_file = os.path.join(auto_path, "cookies.sqlite")
+
+    if os.path.exists(dest_file):
+        os.remove(dest_file)
+
+    # Copy the file
+    shutil.copy2(src_file, dest_file)
+
+
 if __name__ == "__main__":
     search_query = "Gemini is the best AI?"
+    copy_cookies_db()
     pool = multiprocessing.Pool(processes=2)
     pool.apply_async(FirefoxBrowser, args=(search_query, "gemini"))
     pool.apply_async(FirefoxBrowser, args=(search_query, "co-pilot"))

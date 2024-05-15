@@ -1,1 +1,3 @@
-generate a concise Impersonal resume summary without name to add on my resume and Analyse the following job posting and create a cover letter
+Analyse the job posting and then analyse my resume and then
+1. generate concise Impersonal resume summary without name to add on my resume 
+2. generate a cover letter 

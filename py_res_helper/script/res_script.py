@@ -13,7 +13,7 @@ from openpyxl import load_workbook
 from openpyxl.styles import Font
 
 
-from selenium_script import FirefoxBrowser
+from selenium_script import FirefoxBrowser, copy_cookies_db
 
 
 class ResumeHelper:
@@ -25,8 +25,11 @@ class ResumeHelper:
             "Acrobat.exe",
             "EXCEL.EXE",
         ]
+        # Get the current file directory
+        current_file_dir = os.path.dirname(os.path.realpath(__file__))
+
         # Go one directory up
-        parent_dir = os.path.dirname(os.getcwd())
+        parent_dir = os.path.dirname(current_file_dir)
 
         self.template_path = os.path.join(parent_dir, "templates")
 
@@ -40,6 +43,7 @@ class ResumeHelper:
         self.resume_template = (
             f"{self.template_path}\\Ahmed_Qureshi_Resume_Template.docx"
         )
+        print(f"this is the path {self.resume_template}")
         # self.cover_letter_template = f"{self.template_path}\\cover_letter_template.txt"
         self.resume_summary_template = (
             f"{self.template_path}\\resume_summary_template.txt"
@@ -211,7 +215,7 @@ class ResumeHelper:
         return formatted_date
 
     def run_in_multiprocessing(self, func, *args):
-
+        copy_cookies_db()
         pool = multiprocessing.Pool(processes=2)
 
         for arg_tuple in args:
@@ -306,6 +310,13 @@ class ResumeHelper:
             input("\n\nPlease Copy Contents of Job Description and Press Enter ")
 
             job_description = self.format_data(pyperclip.paste())
+
+            self.replace_string_word(
+                search_text="job_description",
+                replacement_text=job_description,
+                file=self.resume_output,
+                save_location=self.resume_output,
+            )
 
             search = self.copy_keyword_job_resume(
                 self.resume_summary_template, job_description
