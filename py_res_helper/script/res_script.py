@@ -244,20 +244,49 @@ class ResumeHelper:
             9: "React Developer",
             10: "Flutter Developer",
             11: "Programmer",
+            12: "It Help Desk Analyst",
+            13: "Administration Clerk",
             # 11: "Mobile App Developer",
             # 12: "DevOps Engineer",
             # 13: "System Administrator",
             # 14: "Database Administrator",
         }
+        resume_type_mapping = {
+            12: ("It_Support", "resume_it_support"),
+            13: ("Admin_Clerk", "resume_admin_clerk"),
+        }
 
-        print("Please choose a number from the following options:")
-        for number, title in title_dict.items():
-            print(f"{number}: {title}")
+        while True:
+            print("Please choose a number from the following options:")
+            print("\n".join(f"{num}: {title}" for num, title in title_dict.items()))
+            choice = input("\nEnter your choice: ")
 
-        number = int(input("\nEnter your choice: "))
-        return title_dict.get(
-            number, "Invalid number. Please enter a number between 1 and 12."
-        )
+            if choice.isdigit() and int(choice) in title_dict:
+                number = int(choice)
+
+                if number in resume_type_mapping:
+                    template, txt_file = resume_type_mapping[number]
+                    self.resume_template = f"{self.template_path}\\Ahmed_Qureshi_{template}_Resume_Template.docx"
+                    self.resume_txt = f"{self.template_path}\\{txt_file}.txt"
+
+                return title_dict[number]
+
+            if not choice.isdigit():
+                resume_type = input(
+                    "\nSelect Resume Type\n1: Programmer,\n2: IT Support,\n3: Administration Clerk): "
+                )
+                if resume_type in ("1", "2", "3"):
+                    if resume_type == "2":
+                        self.resume_template = f"{self.template_path}\\Ahmed_Qureshi_It_Support_Resume_Template.docx"
+                        self.resume_txt = f"{self.template_path}\\resume_it_support.txt"
+                    elif resume_type == "3":
+                        self.resume_template = f"{self.template_path}\\Ahmed_Qureshi_Admin_Clerk_Resume_Template.docx"
+                        self.resume_txt = (
+                            f"{self.template_path}\\resume_admin_clerk.txt"
+                        )
+                    return choice
+
+            print("\nInvalid input. Please try again.\n")
 
     def replace_string_word(
         self,
@@ -324,7 +353,7 @@ class ResumeHelper:
 
             self.run_in_multiprocessing(
                 FirefoxBrowser,
-                (search, "copilot"),
+                (search, "chatgpt"),
                 (search, "gemini"),
             )
 

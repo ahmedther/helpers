@@ -46,6 +46,8 @@ class FirefoxBrowser:
         self.reset_zoom()
         if ai_to_run == "gemini":
             self.tab_gemini()
+        elif ai_to_run == "chatgpt":
+            self.tab_chatgpt()
         else:
             self.search = self.search[:4000]
             self.tab_copilot()
@@ -74,6 +76,11 @@ class FirefoxBrowser:
     def tab_gemini(self):
         self.driver.get("https://gemini.google.com/")
         text_area = self.driver.find_element(By.CLASS_NAME, "ql-editor")
+        text_area.send_keys(self.search, Keys.ENTER)
+
+    def tab_chatgpt(self):
+        self.driver.get("https://chatgpt.com/?model=gpt-4o")
+        text_area = self.driver.find_element(By.ID, "prompt-textarea")
         text_area.send_keys(self.search, Keys.ENTER)
 
     def tab_copilot(self):
@@ -142,7 +149,8 @@ if __name__ == "__main__":
     copy_cookies_db()
     pool = multiprocessing.Pool(processes=2)
     pool.apply_async(FirefoxBrowser, args=(search_query, "gemini"))
-    pool.apply_async(FirefoxBrowser, args=(search_query, "co-pilot"))
+    # pool.apply_async(FirefoxBrowser, args=(search_query, "co-pilot"))
+    pool.apply_async(FirefoxBrowser, args=(search_query, "chatgpt"))
     pool.close()
     pool.join()
 
