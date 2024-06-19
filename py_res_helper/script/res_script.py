@@ -263,7 +263,6 @@ class ResumeHelper:
 
             if choice.isdigit() and int(choice) in title_dict:
                 number = int(choice)
-
                 if number in resume_type_mapping:
                     template, txt_file = resume_type_mapping[number]
                     self.resume_template = f"{self.template_path}\\Ahmed_Qureshi_{template}_Resume_Template.docx"
@@ -273,7 +272,7 @@ class ResumeHelper:
 
             if not choice.isdigit():
                 resume_type = input(
-                    "\nSelect Resume Type\n1: Programmer,\n2: IT Support,\n3: Administration Clerk): "
+                    "\nSelect Resume Type\n1: Programmer\n2: IT Support\n3: Administration Clerk"
                 )
                 if resume_type in ("1", "2", "3"):
                     if resume_type == "2":
@@ -315,6 +314,8 @@ class ResumeHelper:
         run = True
         while run:
 
+            designaion = self.get_programmer_title()
+
             date_now = self.get_formated_date()
 
             # Resume Workings
@@ -326,8 +327,6 @@ class ResumeHelper:
                 irow=5,
                 icell=1,
             )
-
-            designaion = self.get_programmer_title()
 
             self.replace_string_word(
                 search_text="designation",
