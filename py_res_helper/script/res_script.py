@@ -36,6 +36,8 @@ class ResumeHelper:
         self.cover_letter_output = (
             f"{parent_dir}\\output_files\\Ahmed_Qureshi_Cover_Letter.docx"
         )
+        self.cover_letter_txt = f"{parent_dir}\\output_files\\cover_letter.txt"
+
         self.resume_output = f"{parent_dir}\\output_files\\Ahmed_Qureshi_Resume.docx"
         self.cover_letter_template = (
             f"{self.template_path}\\Ahmed_Qureshi_Cover_Letter_Template.docx"
@@ -313,6 +315,20 @@ class ResumeHelper:
 
         doc.save(save_location)
 
+    def copy_word_to_txt(self, word_file_path, txt_file_path):
+        # Read the content from the Word file
+        doc = Document(word_file_path)
+        full_text = []
+        for para in doc.paragraphs:
+            full_text.append(para.text)
+        word_content = "\n".join(full_text)
+
+        # Write the content to the txt file (this will overwrite existing content)
+        with open(txt_file_path, "w", encoding="utf-8") as txt_file:
+            txt_file.write(word_content)
+
+        self.launch_file(txt_file_path)
+
     def run(self):
         run = True
         while run:
@@ -426,6 +442,8 @@ class ResumeHelper:
             self.launch_file(self.cover_letter_output)
 
             input("\n\nPress Enter To Generate Cover Letter ")
+
+            self.copy_word_to_txt(self.cover_letter_output, self.cover_letter_txt)
 
             self.generate_pdf(self.cover_letter_output, self.cover_letter_pdf)
 
