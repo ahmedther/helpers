@@ -40,15 +40,11 @@ class ResumeHelper:
         self.cover_letter_template = (
             f"{self.template_path}\\Ahmed_Qureshi_Cover_Letter_Template.docx"
         )
-        self.resume_template = (
-            f"{self.template_path}\\Ahmed_Qureshi_Resume_Template.docx"
-        )
-        print(f"this is the path {self.resume_template}")
+
         # self.cover_letter_template = f"{self.template_path}\\cover_letter_template.txt"
         self.resume_summary_template = (
             f"{self.template_path}\\resume_summary_template.txt"
         )
-        self.resume_txt = f"{self.template_path}\\resume.txt"
 
         self.resume_pdf = (
             r"C:\Users\AHMED\Desktop\AHMED\Resume\pdf\Ahmed Qureshi Resume.pdf"
@@ -67,6 +63,13 @@ class ResumeHelper:
         self.job_tracker_xls = (
             f"{parent_dir}\\output_files\\job_application_tracker_company_list.xlsx"
         )
+
+    def default_resume_path(self):
+        self.resume_template = (
+            f"{self.template_path}\\Ahmed_Qureshi_Resume_Template.docx"
+        )
+        self.resume_txt = f"{self.template_path}\\resume.txt"
+        print(f"\nThis is the path {self.resume_template}\n")
 
     def close_apps(self):
         for process in (
@@ -313,6 +316,7 @@ class ResumeHelper:
     def run(self):
         run = True
         while run:
+            self.default_resume_path()
 
             designaion = self.get_programmer_title()
 
@@ -324,7 +328,7 @@ class ResumeHelper:
                 replacement_text=date_now,
                 file=self.resume_template,
                 save_location=self.resume_output,
-                irow=5,
+                irow=4,
                 icell=1,
             )
 
