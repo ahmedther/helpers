@@ -465,7 +465,7 @@ class ResumeHelper:
                 ],
             )
 
-            self.launch_file(self.job_tracker_xls)
+            # self.launch_file(self.job_tracker_xls)
 
             continue_run = input(
                 """
