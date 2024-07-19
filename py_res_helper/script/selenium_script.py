@@ -49,7 +49,6 @@ class FirefoxBrowser:
         elif ai_to_run == "chatgpt":
             self.tab_chatgpt()
         else:
-            self.search = self.search[:4000]
             self.tab_copilot()
 
     def reset_zoom(self):

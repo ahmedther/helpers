@@ -277,7 +277,7 @@ class ResumeHelper:
 
             if not choice.isdigit():
                 resume_type = input(
-                    "\nSelect Resume Type\n1: Programmer\n2: IT Support\n3: Administration Clerk"
+                    "\nSelect Resume Type\n1: Programmer\n2: IT Support\n3: Administration Clerk\n"
                 )
                 if resume_type in ("1", "2", "3"):
                     if resume_type == "2":
@@ -374,6 +374,7 @@ class ResumeHelper:
                 FirefoxBrowser,
                 (search, "chatgpt"),
                 (search, "gemini"),
+                # (search, "copilot"),
             )
 
             input("\n\n✅ Please Copy The Summary and Press Enter ")
