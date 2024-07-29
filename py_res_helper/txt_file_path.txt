@@ -1,0 +1,20 @@
+20th July, 2024
+
+ALDO Group
+Montréal, QC
+
+Dear Hiring Manager,
+
+I am writing to express my interest in the Senior Front End Developer position at ALDO Group, as advertised on Indeed. With over 6+ years of experience in front-end development and a strong background in creating robust and scalable web applications, I am excited about the opportunity to contribute to your team's success.
+
+Throughout my career, I have developed a deep understanding of HTML, CSS, JavaScript, and modern frameworks such as React. I have successfully led projects to improve application performance, enhance user experience, and ensure adherence to industry best practices. Collaborating closely with UX designers and product teams, I have consistently delivered high-quality features that meet both user and business requirements.
+
+At Kokilaben Dhirubhai Ambani Hospital, I honed my skills in optimizing code for performance and scalability, conducting thorough testing, and integrating front-end components with backend APIs. My experience with CI/CD pipelines and Agile methodologies has equipped me with the tools to drive continuous improvement and innovation within development teams.
+
+I am particularly drawn to ALDO Group's commitment to ethical practices, sustainability, and creating a diverse and inclusive workplace. I am eager to bring my technical expertise, problem-solving abilities, and passion for delivering impactful solutions to your team.
+
+
+Thank you for considering my application. I look forward to the opportunity to discuss how my skills and experiences align with the goals of ALDO Group.
+
+Sincerely 
+Ahmed Qureshi

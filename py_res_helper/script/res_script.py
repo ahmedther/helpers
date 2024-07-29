@@ -1,8 +1,11 @@
 import re
 import os
 import psutil
-import pyperclip
+
+# import subprocess
 import multiprocessing
+
+import pyperclip
 
 from functools import partial
 from PyPDF2 import PdfReader, PdfWriter
@@ -13,7 +16,7 @@ from openpyxl import load_workbook
 from openpyxl.styles import Font
 
 
-from selenium_script import FirefoxBrowser, copy_cookies_db
+from selenium_script import FirefoxBrowser, AIList, copy_cookies_db
 
 
 class ResumeHelper:
@@ -198,6 +201,9 @@ class ResumeHelper:
             writer.write(save_location_file)
 
         os.startfile(save_location)
+        # The 'start' command in Windows opens a file with its associated application.
+        # The '/min' option starts the window minimized (in the background).
+        # subprocess.Popen(["start", "/min", save_location], shell=True)
 
     def launch_file(self, filename):
         os.startfile(filename)
@@ -321,13 +327,46 @@ class ResumeHelper:
         full_text = []
         for para in doc.paragraphs:
             full_text.append(para.text)
+
         word_content = "\n".join(full_text)
+
+        word_content = self.format_letter_content(word_content)
 
         # Write the content to the txt file (this will overwrite existing content)
         with open(txt_file_path, "w", encoding="utf-8") as txt_file:
             txt_file.write(word_content)
 
         self.launch_file(txt_file_path)
+
+    def format_letter_content(self, content):
+        # Remove everything before and including the date if it exists
+        date_pattern = r"^.*?(\d{1,2}(?:st|nd|rd|th)?\s+\w+,?\s+\d{4})"
+        match = re.search(date_pattern, content, re.DOTALL)
+        if match:
+            content = content[match.start(1) :]
+        else:
+            # If no date found, remove until the first non-empty line
+            content = re.sub(r"^.*?\n(?=\S)", "", content, flags=re.DOTALL)
+
+        # Add extra newline after the date if it exists
+        content = re.sub(
+            r"^(\d{1,2}(?:st|nd|rd|th)?\s+\w+,?\s+\d{4})\n", r"\1\n\n", content
+        )
+
+        # Add extra newline before "Dear" or the first non-empty line if "Dear" doesn't exist
+        if "Dear" in content:
+            content = re.sub(r"\n(Dear\s+[^,\n]+)", r"\n\n\1", content)
+        else:
+            content = re.sub(r"\n(?=\S)", r"\n\n", content, count=1)
+
+        # Add extra newline before closing if it exists
+        closing_pattern = (
+            r"\n(Sincerely|Yours truly|Best regards|Regards|Yours sincerely),?"
+        )
+        if re.search(closing_pattern, content, re.IGNORECASE):
+            content = re.sub(closing_pattern, r"\n\n\1", content, flags=re.IGNORECASE)
+
+        return content.strip()
 
     def run(self):
         run = True
@@ -372,9 +411,8 @@ class ResumeHelper:
 
             self.run_in_multiprocessing(
                 FirefoxBrowser,
-                (search, "chatgpt"),
-                (search, "gemini"),
-                # (search, "copilot"),
+                (search, AIList.CHATGPT.value),
+                (search, AIList.META_AI.value),
             )
 
             input("\n\n✅ Please Copy The Summary and Press Enter ")
@@ -444,13 +482,13 @@ class ResumeHelper:
 
             input("\n\nPress Enter To Generate Cover Letter ")
 
-            self.copy_word_to_txt(self.cover_letter_output, self.cover_letter_txt)
-
             self.generate_pdf(self.cover_letter_output, self.cover_letter_pdf)
 
             self.merge_pdfs(
                 self.cover_letter_pdf, self.resume_pdf, self.resume_cover_merge
             )
+
+            self.copy_word_to_txt(self.cover_letter_output, self.cover_letter_txt)
 
             self.add_row_to_excel(
                 self.job_tracker_xls,

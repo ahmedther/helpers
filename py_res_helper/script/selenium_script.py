@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.firefox import GeckoDriverManager
+from enum import Enum, unique
 
 profile_path = os.path.join(
     os.getenv("APPDATA"),
@@ -21,6 +22,14 @@ auto_path = os.path.join(
     "Profiles",
     "automate",
 )
+
+
+@unique
+class AIList(Enum):
+    GEMINI = "gemini"
+    CHATGPT = "chatgpt"
+    META_AI = "meta.ai"
+    COPILOT = "copilot"
 
 
 class FirefoxBrowser:
@@ -44,12 +53,20 @@ class FirefoxBrowser:
 
         self.driver.implicitly_wait(5)
         self.reset_zoom()
-        if ai_to_run == "gemini":
-            self.tab_gemini()
-        elif ai_to_run == "chatgpt":
-            self.tab_chatgpt()
-        else:
-            self.tab_copilot()
+
+        self.ai_to_run_driver(ai_to_run)
+
+    def ai_to_run_driver(self, ai_to_run):
+        print(ai_to_run)
+        match ai_to_run:
+            case "gemini":
+                return self.tab_gemini()
+            case "chatgpt":
+                return self.tab_chatgpt()
+            case "meta.ai":
+                return self.tab_meta_ai()
+            case _:
+                return self.tab_copilot()
 
     def reset_zoom(self):
         "Sets zoom level to 100%"
@@ -80,6 +97,14 @@ class FirefoxBrowser:
     def tab_chatgpt(self):
         self.driver.get("https://chatgpt.com/?model=gpt-4o")
         text_area = self.driver.find_element(By.ID, "prompt-textarea")
+        text_area.send_keys(self.search, Keys.ENTER)
+
+    def tab_meta_ai(self):
+        self.driver.get("https://www.meta.ai//")
+        # text_area = self.driver.find_element(By.ID, ":r6:")
+        text_area = self.driver.find_element(
+            By.XPATH, "//textarea[@placeholder='Ask Meta AI anything...']"
+        )
         text_area.send_keys(self.search, Keys.ENTER)
 
     def tab_copilot(self):
@@ -144,12 +169,13 @@ def copy_cookies_db() -> str:
 
 
 if __name__ == "__main__":
-    search_query = "Gemini is the best AI?"
+    search_query = "META.AI is the best AI?"
     copy_cookies_db()
-    pool = multiprocessing.Pool(processes=2)
-    pool.apply_async(FirefoxBrowser, args=(search_query, "gemini"))
+    pool = multiprocessing.Pool(processes=1)
+    # pool.apply_async(FirefoxBrowser, args=(search_query, "gemini"))
     # pool.apply_async(FirefoxBrowser, args=(search_query, "co-pilot"))
-    pool.apply_async(FirefoxBrowser, args=(search_query, "chatgpt"))
+    # pool.apply_async(FirefoxBrowser, args=(search_query, AIList.CHATGPT.value))
+    pool.apply_async(FirefoxBrowser, args=(search_query, AIList.META_AI.value))
     pool.close()
     pool.join()
 
