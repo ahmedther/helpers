@@ -118,8 +118,10 @@ class ResumeHelper:
         # Remove extra spaces
         text = re.sub(" +", " ", data)
 
+        # Replace end line identifier with nothing
+        text = text.replace("\r", "")
+
         # Replace multiple line breaks with a single one
-        text = re.sub("\r\n\r\n", "\n\n", text)
         text = re.sub("\\n+", "\\n\\n", text)
 
         return text
@@ -149,10 +151,10 @@ class ResumeHelper:
 
         data = self.format_data(data)
 
-        return data
+        # return data
         # Copy to clipboard
 
-        # pyperclip.copy(data)
+        pyperclip.copy(data)
 
     def replace_string_in_word_table(
         self,
@@ -306,6 +308,7 @@ class ResumeHelper:
         save_location,
         isbold: bool = False,
     ):
+
         doc = Document(file)
         for p in doc.paragraphs:
             if search_text in p.text:
@@ -368,6 +371,16 @@ class ResumeHelper:
 
         return content.strip()
 
+    def extract_company_name(self, text):
+        # Regular expression pattern to match the company name
+        pattern = r"^[^\d\n\-•]+"
+
+        # Search for the pattern in the input text
+        match = re.search(pattern, text)
+
+        # If a match is found, return the matched string, else return None
+        return match.group(0).strip() if match else None
+
     def run(self):
         run = True
         while run:
@@ -405,14 +418,13 @@ class ResumeHelper:
                 save_location=self.resume_output,
             )
 
-            search = self.copy_keyword_job_resume(
-                self.resume_summary_template, job_description
-            )
+            # Copies the Data to the memory
+            self.copy_keyword_job_resume(self.resume_summary_template, job_description)
 
             self.run_in_multiprocessing(
                 FirefoxBrowser,
-                (search, AIList.CHATGPT.value),
-                (search, AIList.META_AI.value),
+                (AIList.CHATGPT.value,),
+                (AIList.META_AI.value,),
             )
 
             input("\n\n✅ Please Copy The Summary and Press Enter ")
@@ -448,15 +460,24 @@ class ResumeHelper:
 
             input("\n\nPress Enter, Cover Body On The Word Template ")
 
+            body_text = self.replace_lines_breaks(pyperclip.paste())
+
+            input("\n\nPress Enter To Copy the Company Name On The Word Template ")
+
+            company_name_to_replace = self.extract_company_name(pyperclip.paste())
+
+            if company_name_to_replace:
+                body_text = body_text.replace("[Company Name]", company_name_to_replace)
+
+            company_name = self.format_text_single_break(pyperclip.paste())
+
             self.replace_string_word(
                 search_text="body",
-                replacement_text=self.replace_lines_breaks(pyperclip.paste()),
+                replacement_text=body_text,
                 file=self.cover_letter_output,
                 save_location=self.cover_letter_output,
             )
 
-            input("\n\nPress Enter To Copy the Company Name On The Word Template ")
-            company_name = self.format_text_single_break(pyperclip.paste())
             self.replace_string_word(
                 search_text="company_name",
                 replacement_text=company_name,
