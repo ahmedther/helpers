@@ -517,11 +517,8 @@ class ResumeHelper:
                     company_name,
                     designaion,
                     contact_person,
-                    "",
-                    "Remote",
-                    "",
-                    "",
                     date_now,
+                    job_description,
                 ],
             )
 
