@@ -1,7 +1,7 @@
 @echo off
 call "..\..\py_res_helper_venv\Scripts\activate"
  
-python res_script.py
+python app.py
 
 @REM echo Running the first function...
 @REM python -c "import res_script; res_script.process_file()"

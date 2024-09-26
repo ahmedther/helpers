@@ -102,13 +102,13 @@ class FirefoxBrowser:
 
     def tab_gemini(self):
         self.driver.get("https://gemini.google.com/")
-        text_area = self.driver.find_element(By.CLASS_NAME, "ql-editor")
+        text_area = self.driver.find_element(By.CLASS_NAME, "")
         sleep(1)
         self.perform_search_action(text_area)
         # text_area.send_keys(self.search, Keys.ENTER)
 
     def tab_chatgpt(self):
-        self.driver.get("https://chatgpt.com/?model=gpt-4o")
+        self.driver.get("https://chatgpt.com/?model=o1-mini")
         text_area = self.driver.find_element(By.ID, "prompt-textarea")
         self.perform_search_action(text_area)
         # text_area.send_keys(self.search, Keys.ENTER)

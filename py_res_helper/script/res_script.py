@@ -16,7 +16,7 @@ from openpyxl import load_workbook
 from openpyxl.styles import Font
 
 
-from selenium_script import FirefoxBrowser, AIList, copy_cookies_db
+# from selenium_script import FirefoxBrowser, AIList, copy_cookies_db
 
 
 class ResumeHelper:
@@ -228,8 +228,8 @@ class ResumeHelper:
         return formatted_date
 
     def run_in_multiprocessing(self, func, *args):
-        copy_cookies_db()
-        pool = multiprocessing.Pool(processes=2)
+        # copy_cookies_db()
+        pool = multiprocessing.Pool(processes=3)
 
         for arg_tuple in args:
             partial_func = partial(func, *arg_tuple)
@@ -421,11 +421,11 @@ class ResumeHelper:
             # Copies the Data to the memory
             self.copy_keyword_job_resume(self.resume_summary_template, job_description)
 
-            self.run_in_multiprocessing(
-                FirefoxBrowser,
-                (AIList.CHATGPT.value,),
-                (AIList.META_AI.value,),
-            )
+            # self.run_in_multiprocessing(
+            #     FirefoxBrowser,
+            #     (AIList.CHATGPT.value,),
+            #     (AIList.META_AI.value,),
+            # )
 
             input("\n\n✅ Please Copy The Summary and Press Enter ")
 

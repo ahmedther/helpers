@@ -4,6 +4,8 @@ docx2pdf
 python-docx
 psutil
 openpyxl
-selenium
-pyshadow
-webdriver_manager
+playwright
+fake-useragent
+# selenium
+# pyshadow
+# webdriver_manager 
