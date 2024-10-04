@@ -41,13 +41,15 @@ async def run_multi_playwright():
 #         await asyncio.gather(*(helper.close_browser() for helper in helpers))
 
 
-async def main():
-    helpers = None
+helpers = None
+
+
+async def main(helpers):
     run = True
     while run:
         if helpers:
             for helper in helpers:
-                asyncio.run(helper.close_browser())
+                await asyncio.gather(*(helper.close_browser() for helper in helpers))
 
         force_kill_browser()
 
@@ -194,7 +196,7 @@ async def main():
             ],
         )
 
-        # res_helper.launch_file(res_helper.job_tracker_xls)
+        res_helper.launch_file(res_helper.job_tracker_xls)
 
         continue_run = input(
             """
@@ -212,4 +214,4 @@ async def main():
         run = False
 
 
-asyncio.run(main())
+asyncio.run(main(helpers))
